@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\tinyobjloader">
+      <UniqueIdentifier>{30ffc251-bf09-4a34-890c-064ae5363f1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tinyobjloader">
+      <UniqueIdentifier>{16ad33e3-d9de-49bd-ad8a-8f265dd97d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\stb_image">
+      <UniqueIdentifier>{571d1649-517a-4d72-b3b4-2be33deea9ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objindexer">
+      <UniqueIdentifier>{4ee79462-41fe-46fc-9339-9bca220b3d02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\code\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\View.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\ShaderManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\tinyobjloader\tiny_obj_loader.cc">
+      <Filter>Source Files\tinyobjloader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\objindexer\vboindexer.cpp">
+      <Filter>Header Files\objindexer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\code\Postprocess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\code\View.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\ShaderManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\Actor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\Mesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\Camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\tinyobjloader\tiny_obj_loader.h">
+      <Filter>Header Files\tinyobjloader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\stb_image\stb_image.h">
+      <Filter>Header Files\stb_image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\PointLight.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\objindexer\vboindexer.hpp">
+      <Filter>Header Files\objindexer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\Postprocess.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\MotionBlur.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\DizzyProcess.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
