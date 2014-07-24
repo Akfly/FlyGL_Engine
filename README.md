@@ -43,34 +43,23 @@ Represents the world camera. Its parent class is Actor, and has additionally cam
 **Mesh**
 Represents a mesh in the world (inherits from Actor). This class contains the different buffers needed such as vertices, uvs, normals, tangents and bitangents (the last two needed for correct normal mapping, named as that because they are tangents to the normal vector).
 
+It has a method called LoadMesh, that loads the data from an obj file and fills the buffers with it. It uses another two methods to load the shaders and the textures. The actual working shaders are vertex.glsl and fragment.glsl, and they load three types of texture: Diffuse, Specular and Normal (no less, no more).
+
+The Draw method draws the mesh in the actual frameBuffer (the original or our custom), and pass every data to shaders (lights, textures and attributes).
+
+**PointLight**
+This class represents a light in the scene. This kind of light is just one that is in a point and affects every light equally. It has every additionally properties like color and intensity, and it also has methods to turn it on/off and switch between it.
+
+**ShaderManager**
+This class manages the shaders. It loads the .glsl files, read them and compile them. It also gets the Uniforms and returns the program ID (it could be neccessary to perform additional operations).
+
+**Postprocess**
+This class implements a postprocess effect on the scene. It could be used as a base class to inherit from it to get a more complex effect or use it to get a simple effect. Basically, it changes the default frameBuffer (0) to our frameBuffer, so when the fragment shader outputs the data it is send to our frameBuffer and draws it on a texture. Afterwards we draw a simple square mesh that has the same size and position as the screen and render the texture on this mesh. This way, we can modify the texture with another shader, giving it different effects.
+
+This class has an Initialize method that loads everything 
 -------------------------------------------------------------------
 
-Tiene un método (LoadMesh) para cargar los datos desde un obj y almacenar estos en los
-búfferes. Y otros dos para cargar los shaders y las texturas. En este caso está pensado para
-que estas mallas funcionen con los shaders vertex.glsl y fragment.glsl, y que carguen las 3
-texturas de Diffuse, Specular y Normal.
-El método Draw se encarga de pintar en el frameBuffer activo la malla (puede ser el original u
-otro que hayamos creado), y se encarga de pasar todos los datos de luces, texturas y atributos
-al shader.
-Hay otros métodos privados, que símplemente son partes de los anteriores mencionados. Esto
-se ha hecho así para una mejor lectura del código.
-PointLight
-Clase que representa una luz en la escena (y por ello hereda de Actor). Este tipo de luz es solo
-una luz que está en un punto y que afecta a todas direcciones por igual. Tiene propiedades
-adicionales como el color o la intensidad, además de métodos para encender, apagar o cambiar
-de un estado a otro (Switch).
-ShaderManager
-Clase que se encarga de la gestión de shaders. Carga archivos de código de shader (.glsl) y los
-lee y compila. Además tiene un método para recoger los Uniforms del shader (que es muy
-sencillo), y un método que devuelve el ID del shaderProgram por si es necesario hacer alguna
-operación adicional.
 Postprocess
-Clase que implementa un efecto de postproceso en la escena. Puede usarse para heredar de
-ella a un efecto más complejo o usar como un postproceso sencillo. Básicamente consiste encambiar el frameBuffer por defecto (el 0) por un nuestro, y así, cuando se pinte una malla y el
-fragment shader saqué los parámetro de color, nosotros los recogemos de este frameBuffer y
-los pintamos en una textura. Después pintamos una malla sencilla que es un plano en la
-pantalla, haciendo coincidir los bordes de este plano con los de la pantalla, y pintar la textura en
-este plano. Esto nos permite modificar la textura con otro shader, dando así distintos efectos.
 Esta clase tiene un método Initialize que inicializa todo lo necesario para el postproceso (su
 plano, una textura para pintar en ella, los shaders, los búffers, etc). Después, antes de pintar,
 hay que llamar a un método en cada Frame de “Preprocess”, que simplemente cambia el
