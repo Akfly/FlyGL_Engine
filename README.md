@@ -102,4 +102,4 @@ I've used some additional libraries:
 
 - stb_image: To load different images and textures, it can load different formats. https://github.com/nothings/stb
 
-- vboindexer: This is just a method extracted from a tutorial that I've used to learn OpenGL. This method orders the indices loaded from an obj. http://www.opengl­tutorial.org/download/The file is in the common folder.
+- vboindexer: This is just a method extracted from a tutorial that I've used to learn OpenGL. This method orders the indices loaded from an obj. http://www.opengl­tutorial.org/download/ The file is in the common folder.
