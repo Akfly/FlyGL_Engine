@@ -56,85 +56,50 @@ This class manages the shaders. It loads the .glsl files, read them and compile 
 **Postprocess**
 This class implements a postprocess effect on the scene. It could be used as a base class to inherit from it to get a more complex effect or use it to get a simple effect. Basically, it changes the default frameBuffer (0) to our frameBuffer, so when the fragment shader outputs the data it is send to our frameBuffer and draws it on a texture. Afterwards we draw a simple square mesh that has the same size and position as the screen and render the texture on this mesh. This way, we can modify the texture with another shader, giving it different effects.
 
-This class has an Initialize method that loads everything 
--------------------------------------------------------------------
+This class has an Initialize method that loads everything necessary for creating a postprocess (a plane, a texture, shaders, buffers, etc). Then, before drawing, the method "Preprocess" has to be called, so we switch the actual frameBuffer to our own. Then we draw as always (meshes, lights, etc) and finally call the "Draw" method of our effect, that will draw on the frameBuffer 0.
 
-Postprocess
-Esta clase tiene un método Initialize que inicializa todo lo necesario para el postproceso (su
-plano, una textura para pintar en ella, los shaders, los búffers, etc). Después, antes de pintar,
-hay que llamar a un método en cada Frame de “Preprocess”, que simplemente cambia el
-frameBuffer actual por el de este efecto. Después se pintaría normal (todas las mallas, las
-luces, etc) y finalmente llamar al método Draw del efecto, que ya pinta en el frameBuffer 0.
-DizzyProcess
-Este es un efecto sencillo que duplica la pantalla y la mueve. Hereda de Postprocess para
-obtener lo básico, y adicionalmente tenemos 3 uniforms, que son el tiempo, el radio y la altura
-de la pantalla, para pasárselos al shader.
-MotionBlur
-Hereda de Postprocess, y es un efecto algo más complejo, ya que requiere de 2 texturas,
-aunque es un Motion Blur sencillo de cámara sólo (no de objetos), siguiendo el método de la
-textura de velocidad (hay otro que es con la textura de profundidad). La idea básicamente es
-que en los shaders de las mallas, calculemos una velocidad de cada pixel, y esto se lo
-pasemos como textura al shader del postproceso. Por ello necesitamos una segunda textura.
-Esta hay que cargarla con GL_COLOR_ATTACHMENT1, en vez de el 0, por ser la segunda, y
-además se añade al búffer de pintado. Después simplemente aplicamos la textura a la hora de
-pintar como se hace normalmente. La clase Postprocess ya cuenta con un método para cargar
-texturas, por lo que sólo tenemos que llamar a InitializeTexture() para cargar nuestra textura.
-View
-Clase que representa la escena en sí. Contiene todos sus elementos (mallas, luces, cámara, y
-postprocesos).
-Tiene un método Initialize que se encarga de Inicializar todo lo de arriba. Al final del .cpp están
-los métodos que se encargan de cargar cada cosa, para tenerlo todo mejor organizado.
-También tenemos los métodos Update y Draw, que se llaman desde fuera y se encargan de
-mover los objetos, llamar a los Update de cada elemento, y de pintar en la escena. El método
-Draw se divide en varias partes, primero llama al método de Preproceso de un efecto si es
-necesario, luego rellenamos el búffer de luces con los datos necesarios para pasárselo a las
-mallas y que puedan pintar las luces. Luego pinta las mallas, si va a haber reflexión hay que
-llamar a unos métodos adicionales, por eso se han englobado estos dos pintados, y por último
-se llama al Draw del postproceso si es necesario.El pintado de reflexión (ReflectionDraw) primero pinta las mallas normalmente que no tendrán
-reflejos, luego llama a PrepareReflectiveDraws(), que prepara el Stencil Buffer, para decir que lo
-siguiente que se pinte servirá también de máscara para los siguientes pintados. Después
-pintamos las mallas que tendrán reflejos, y llamamos a PrepareReflectionDraws(), que hace
-que se aplique la máscara del Stencil Búffer, lo que quede fuera de esta máscara no se pintará,
-además habilitamos la transparencia para los siguientes pintados y así parezca que el reflejo se
-mezcla con el suelo. Después pintamos los reflejos (invirtiendo la Y), y por último llamamos a
-EndReflection(), que deshabilita la transparencia y el uso del Stencil Búffer.
-Esta clase también tiene el método de Inputs, que recoge los eventos del teclado y aplica cada
-uno su efecto.
-Main
-Inicia el programa, se encarga de inicializar la ventana de SFML, Glew, y View. Antes de
-inicializar View pinta una pantalla de loading (el método está al final del código, es muy sencillo,
-se basa principalmente en el código de Postproceso, pinta un Quad en pantalla con una
-textura). También se encarga de los eventos de la ventana, como el Cerrar y el Resize.
+**DizzyProcess**
+This is a simple effect that duplicates the screen and move it. Inherits from Postprocess to get the basics, and additionally we have 3 uniforms, which are Time, Radius and Screen Height.
+
+**MotionBlur**
+Inherits from Postprocess, and it is a little more complex effect, because it requires 2 textures instead of one. It is a simple Motion Blur (Camera only, not Object-MotionBlur), and this one is performed with the speed texture (there is another one with depth texture instead). The basic idea is that in the mesh shaders we calculate the speed in each fragment and then we pass it to the second texture. To implement this second texture we load it with GL_COLOR_ATTACHMENT1 (instead of 0), and add a drawing buffer. Then we just apply the texture when drawing like usual. The Postprocess class already has a method to load textures, so we just have to call "InitializeTexture" to load this new one.
+
+**View**
+This class represents the scene itself and has every element on it (meshes, lights, camera and postprocesses).
+
+It has an Initialize method that loads everything. At the end of the .cpp file are every method that load those different elements to keep it organized. We also have an Update and a Draw methods. The Draw method is divided in different steps, the first one calls the Preprocess method of an effect if necessary, then we fill the light buffer with the data to send it to the different meshes, and if we are drawing with reflection we need to call additional methods, and then call the Postprocess Draw if necessary. ReflectionDraw draws first the meshes that won't have reflections on it a usual, then it calls PrepareReflectiveDraws, that sets the Stencil Buffer, that specifies that the next to be drawn is also used as a mask for next drawings (if what we are drawing is inside this mask then draw it, else we don't). Then we draw the meshes that will recieve this reflection, in our case the floor, and call PrepareReflectionDraws, that will apply the mask to the Stencil Buffer, so what is not inside this mask will not be drawn, and apply transparency for the next elements. Then we draw the reflections (the same meshes with an inverted Y), and finally we call EndReflection, that disables transparency and the Stencil Buffer.
+
+This class also takes care of inputs, and the different effects that this will have on the scene (change positions, lights, etc).
+
+**Main**
+Initialize the program (the SFML window, Glew and View). Before initializing View we draw a loading screen (the mothod is at the end of the file, and it is really simple, based on the Postprocess code, we draw a quad on the screen).It also handles window events like Resize or Close.
+
 Shaders
-vertex y fragment
-Estos son los shaders de las mallas. Básicamente recogen los datos de posición, las luces,
-hacen la matriz TBN para las normales, y luego aplican las luces y las texturas (diffuse,
-specular y normals). Adicionalmente recogen la MVP (model view projection) actual y anterior, y
-las resta para conseguir la textura de velocidad para el Motion Blur, y se le pasa como segundo
-parámetro desde el fragment (si no se recoge esta segunda textura no pasa nada).
-basicPostProcess
-Como su nombre indica, un shader sencillo, que pinta por pantalla la textura recogida. No hace
-nada más, se puede usar como base para más postprocesos.
-blur
-Efecto de postproceso de Blur (desenfoque), simplemente en el fragment recogemos los
-píxeles de alrededor del nuestro y los mezclamos.
-dizzy
-Un efecto normalillo, duplicamos la textura y las movemos en función del seno y coseno, el
-radio, y el alto de la pantalla. Esto mueve las 2 texturas de forma diferente, teniendo 2 colores en
-un mismo píxel, por lo que mezclamos ambos (con un mix un 50% cada color).loading
-Un shader muy básico parecido a basicPostProcess, simplemente pinta una textura.
-motionBlur
-Recoge la textura de color y de velocidad, y se recorre un bucle (con un nº de iteraciones ya
-establecido). En este bucle se calcula un offset distinto para cada iteración, usando una
-dirección ya calculada. Esto recorre varios pixeles (si se han movido) y se mezclan entre ellos.
-Si no se han movido, el píxel recorrido será siempre el mismo, por lo que no habrá desenfoque.
-Librerias
-Adicionalmente, se han usado algunas librerías adicionales a las de los repositorios de clase.
-Estas son:
-● tinyobjloader: Librería sencilla que se encarga de leer obj. Se puede descargar de aquí:
-https://github.com/syoyo/tinyobjloader
-● stb_image: Una librería muy conocida para la carga de imágenes. Puede cargar
-distintos formatos. https://github.com/nothings/stb
-● vboindexer: No es una librería exáctamente, solo es un método extraído de un tutorial
-para ordenar los índices cargados de un obj (y por ello algo lento, pero eficaz).
-http://www.opengl­tutorial.org/download/ El archivo está en la carpeta common.
+-------
+
+**Vertex and Fragment**
+This are the mesh shaders. They gather the position data, lights, create the TBN matrix for normal mapping and apply textures (diffuse, normal, secular). Additionally they get the actual and previous MVP matrices (Model View Projection) and subtract them to get the Speed Texture for the Motion Blur effect, and send it as a second parameter from the fragment shader.
+
+**BasicPostProcess**
+A simple shader that takes a textures and draws it. I used it just to copy it and then make more shaders.
+
+**Blur**
+A simple blur effect. We take the near pixels on the fragment and mix them.
+
+**Dizzy**
+A normal effect, we duplicate our texture and move it with sin and cosin, a specified radius and the height of the screen. Then we mix both colors (50%).
+
+**Loading**
+A basic shader similar to BasicPostProcess, just draws a texture.
+
+**MotionBlur**
+Gets both color and speed textures, and in a loop (with a specified number of iterations) we calculate the offset using an already calculated direction. This gives a result of different pixels, so we blend them, giving the motion blur effect. If nothing has been moved, the pixel on the loop will always be the same, so there will be no blur.
+
+**Libraries**
+I've used some additional libraries:
+
+- tinyobjloader: Simple library to read obj files. It can be downloaded from: https://github.com/syoyo/tinyobjloader
+
+- stb_image: To load different images and textures, it can load different formats. https://github.com/nothings/stb
+
+- vboindexer: This is just a method extracted from a tutorial that I've used to learn OpenGL. This method orders the indices loaded from an obj. http://www.opengl­tutorial.org/download/The file is in the common folder.
